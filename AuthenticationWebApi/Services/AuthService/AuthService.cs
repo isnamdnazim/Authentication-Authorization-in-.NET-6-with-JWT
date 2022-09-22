@@ -30,7 +30,14 @@ namespace AuthenticationWebApi.Services.AuthService
                 return new AuthResponseDto { Message = "Wrong Password" };
             }
             string token = CreateToken(user);
-            return new AuthResponseDto { IsSuccess = true, Token = token};
+            var refreshToken = CreateRefreshToken();
+            return new AuthResponseDto 
+            { 
+                IsSuccess = true, 
+                Token = token,
+                RefreshToken = refreshToken.Token,
+                TokenExpires = refreshToken.Expires
+            };
         }
 
         public async Task<User> RegisterUser(UserDto request)
@@ -87,6 +94,18 @@ namespace AuthenticationWebApi.Services.AuthService
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
+        }
+
+        private RefreshToken CreateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(7),
+                Created = DateTime.Now
+            };
+
+            return refreshToken;
         }
 
         

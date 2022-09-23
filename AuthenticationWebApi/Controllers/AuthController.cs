@@ -46,7 +46,7 @@ namespace AuthenticationWebApi.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult<string>  Boom()
         {
             return Ok("Hey! You're Authorized!");

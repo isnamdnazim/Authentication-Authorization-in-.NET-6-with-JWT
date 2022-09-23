@@ -35,13 +35,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8
-        .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+            .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
         ValidateIssuer = false,
         ValidateAudience = false
     };
 });
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -58,4 +59,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//app.Run(context => { context.Response.Redirect("swagger"); return Task.CompletedTask; });
 app.Run();
